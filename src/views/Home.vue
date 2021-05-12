@@ -1,18 +1,63 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div :style="{ color: store.state.colorCode }" class="counter">
+      {{ store.state.counter }}
+    </div>
+    <div class="counter-squared">
+      {{ store.state.counter }}
+      <sup>2</sup> = 
+      {{ store.getter.counterSquared() }}
+    </div>
+    <div class="buttons">
+      <button @click="store.methods.decreaseCounter">-</button>
+      <button @click="store.methods.increaseCounter">+</button>
+    </div>
+    <div>
+      <input
+        v-model="colorCode"
+        placeholder="Enter a color"
+        type="text"
+      > 
+    </div>
   </div>
 </template>
-
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
 
+import {inject, computed} from 'vue'
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+  setup(){
+    const store = inject('store')
+
+    const colorCode = computed({
+      get(){
+        return store.state.colorCode
+      },
+      set(val){
+        store.methods.setColorCode(val);
+      }
+    })
+
+    return{
+      store,
+      colorCode
+    } 
   }
 }
 </script>
+
+<style scoped>
+div{
+  margin-bottom: 10px;
+}
+
+.counter{
+  font-size: 80px;
+}
+.buttons button{
+  font-size: 40px;
+  width: 100px;
+  margin: 0 10px;
+}
+</style>
